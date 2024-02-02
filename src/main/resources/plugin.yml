@@ -1,0 +1,4 @@
+name: Security
+version: '${project.version}'
+main: me.lished.security.Security
+api-version: '1.20'
