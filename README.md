@@ -4,7 +4,7 @@
 The Security plugin is designed to enhance the safety and security of your Minecraft server. It is written in Kotlin and provides various features
 
 ## Features
-- **Account Safety**: Protects your Minecraft account from hackers by IP-Blocking, on cracked servers, it prevents users with the same name from connecting into your account.
+- **Account Safety**: Protects your Minecraft account from hackers by IP-Blocking. On cracked servers, it prevents users with the same name from connecting into your account.
 - **AntiCheat**: including ADVANCED Auto clicker and macro checker based on machine-learning click and type patterns analyzer
 - **Chat Filtering**: profanity or offensive language is hidden by asterisks
 - **Blocking plugin scanners**: So players can't know what plugins you're using
