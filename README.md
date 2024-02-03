@@ -5,7 +5,7 @@ The Security plugin is designed to enhance the safety and security of your Minec
 
 ## Features
 - **Account Safety**: Protects your Minecraft account from hackers by IP-Blocking, on cracked servers, it prevents users with the same name from connecting into your account.
-- **ADVANCED Auto clicker and macro checker**: Machine-learning click patterns parser
+- **ADVANCED Auto clicker and macro checker**: Machine-learning click patterns analyzer
 - **Blocking plugin scanners**: So players can't know what plugins you're using
 
 ## Installation
