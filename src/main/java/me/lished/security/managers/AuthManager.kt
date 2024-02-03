@@ -3,7 +3,6 @@ package me.lished.security.managers
 import java.io.File
 import org.bukkit.entity.Player
 import org.bukkit.configuration.file.YamlConfiguration
-import java.io.IOException
 
 
 object AuthManager {
@@ -17,11 +16,7 @@ object AuthManager {
     fun storeIP(player: Player) {
         dataFile.set(player.name, player.address.hostString)
 
-        try {
-            dataFile.save(File("plugins/Security/ips.yml"))
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        dataFile.save(File("plugins/Security/ips.yml"))
     }
 
     fun hasSameIP(player: Player): Boolean {
