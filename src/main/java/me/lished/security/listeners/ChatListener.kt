@@ -19,7 +19,7 @@ class ChatListener : Listener {
         if (connection.responseCode == HttpURLConnection.HTTP_OK) {
             val reader = BufferedReader(InputStreamReader(connection.inputStream))
             val response = reader.readText()
-            e.message(Component.text(response.substring(11, response.length - 1)))
+            e.message(Component.text(response.substring(11, response.length - 2)))
         }
     }
 }
