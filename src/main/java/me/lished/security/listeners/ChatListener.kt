@@ -17,7 +17,7 @@ data class Result(val result: String)
 class ChatListener : Listener {
     @EventHandler
     fun onChat(e: AsyncChatEvent) {
-        if(e.player.hasPermission("security.bypassfilter")) {return}
+        if(e.player.hasPermission("security.bypass.filter")) {return}
 
         val url = URL("https://www.purgomalum.com/service/json?text=${e.originalMessage()}")
         val connection = url.openConnection() as HttpURLConnection
