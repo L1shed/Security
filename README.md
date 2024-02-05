@@ -6,8 +6,10 @@ The Security plugin is designed to enhance the safety and security of your Minec
 ## Features (NOT FINISHED)
 - **Account Safety**: Protects your Minecraft account from hackers by IP-Blocking. On cracked servers, it prevents users with the same name from connecting into your account.
 - **AntiCheat**: including ADVANCED Auto clicker and macro checker based on machine-learning click and type patterns analyzer
-- **Chat Filtering**: profanity or offensive language is hidden by asterisks
+- **Chat Filtering**: Profanity or offensive language is hidden by asterisks
 - **Blocking plugin scanners**: So players can't know what plugins you're using
+- **Anti-Bot / Raid**
+- **Anti-VPN**
 
 ## Installation
 To install it, simply download the latest build (.jar file) and place it in the "plugins" folder of your Minecraft server.
