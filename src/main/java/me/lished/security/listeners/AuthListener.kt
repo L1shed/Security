@@ -12,8 +12,8 @@ class AuthListener : Listener {
     fun onJoin(e: PlayerJoinEvent) {
         val player = e.player
 
-//        if (!player.hasPlayedBefore()) {
         if (!AuthManager.hasJoinedBefore(player)) {
+
             AuthManager.storeIP(player)
         } else {
             if (!AuthManager.hasSameIP(player)) {
