@@ -5,31 +5,11 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 class DiscordWebhook(private val url: String) {
-    private var content: String? = null
-    private var username: String? = null
-    private var avatarUrl: String? = null
-    private var tts: Boolean = false
-    private val embeds: MutableList<EmbedObject> = mutableListOf()
-
-    fun setContent(content: String) {
-        this.content = content
-    }
-
-    fun setUsername(username: String) {
-        this.username = username
-    }
-
-    fun setAvatarUrl(avatarUrl: String) {
-        this.avatarUrl = avatarUrl
-    }
-
-    fun setTts(tts: Boolean) {
-        this.tts = tts
-    }
-
-    fun addEmbed(embed: EmbedObject) {
-        embeds.add(embed)
-    }
+    var content: String? = null
+    var username: String? = null
+    var avatarUrl: String? = null
+    var tts: Boolean = false
+    val embeds: MutableList<EmbedObject> = mutableListOf()
 
     @Throws(IOException::class)
     fun execute() {
@@ -103,7 +83,7 @@ class DiscordWebhook(private val url: String) {
         val url = URL(this.url)
         val connection = url.openConnection() as HttpsURLConnection
         connection.addRequestProperty("Content-Type", "application/json")
-        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_")
+        connection.addRequestProperty("User-Agent", "Kotlin-DiscordWebhook-BY-Lished")
         connection.doOutput = true
         connection.requestMethod = "POST"
 
