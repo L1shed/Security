@@ -1,35 +1,25 @@
-package me.lished.security.utils
-
 import java.awt.Color
 import java.io.IOException
-import java.lang.reflect.Array
+import java.io.OutputStream
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
-/**
- * Class used to execute Discord Webhooks with low effort
- */
-class DiscordWebhook
-/**
- * Constructs a new DiscordWebhook instance
- *
- * @param url The webhook URL obtained in Discord
- */(private val url: String) {
+class DiscordWebhook(private val url: String) {
     private var content: String? = null
     private var username: String? = null
     private var avatarUrl: String? = null
-    private var tts = false
-    private val embeds: MutableList<EmbedObject> = ArrayList()
+    private var tts: Boolean = false
+    private val embeds: MutableList<EmbedObject> = mutableListOf()
 
-    fun setContent(content: String?) {
+    fun setContent(content: String) {
         this.content = content
     }
 
-    fun setUsername(username: String?) {
+    fun setUsername(username: String) {
         this.username = username
     }
 
-    fun setAvatarUrl(avatarUrl: String?) {
+    fun setAvatarUrl(avatarUrl: String) {
         this.avatarUrl = avatarUrl
     }
 
@@ -43,84 +33,66 @@ class DiscordWebhook
 
     @Throws(IOException::class)
     fun execute() {
-        if (this.content == null && embeds.isEmpty()) {
+        if (content == null && embeds.isEmpty()) {
             throw IllegalArgumentException("Set content or add at least one EmbedObject")
         }
 
-        val json: JSONObject = JSONObject()
+        val json = JSONObject()
 
-        json.put("content", this.content)
-        json.put("username", this.username)
-        json.put("avatar_url", this.avatarUrl)
-        json.put("tts", this.tts)
+        json.put("content", content)
+        json.put("username", username)
+        json.put("avatar_url", avatarUrl)
+        json.put("tts", tts)
 
-        if (!embeds.isEmpty()) {
-            val embedObjects: MutableList<JSONObject> = ArrayList()
+        if (embeds.isNotEmpty()) {
+            val embedObjects = mutableListOf<JSONObject>()
 
-            for (embed: EmbedObject in this.embeds) {
-                val jsonEmbed: JSONObject = JSONObject()
+            for (embed in embeds) {
+                val jsonEmbed = JSONObject()
 
                 jsonEmbed.put("title", embed.title)
                 jsonEmbed.put("description", embed.description)
                 jsonEmbed.put("url", embed.url)
-
-                if (embed.color != null) {
-                    val color = embed.color
-                    var rgb = color!!.red
-                    rgb = (rgb shl 8) + color.green
-                    rgb = (rgb shl 8) + color.blue
-
+                embed.color?.let { color ->
+                    val rgb = color.red shl 16 or (color.green shl 8) or color.blue
                     jsonEmbed.put("color", rgb)
                 }
 
-                val footer = embed.footer
-                val image = embed.image
-                val thumbnail = embed.thumbnail
-                val author = embed.author
-                val fields = embed.getFields()
-
-                if (footer != null) {
-                    val jsonFooter: JSONObject = JSONObject()
-
-                    jsonFooter.put("text", footer.getText())
-                    jsonFooter.put("icon_url", footer.getIconUrl())
+                embed.footer?.let { footer ->
+                    val jsonFooter = JSONObject()
+                    jsonFooter.put("text", footer.text)
+                    jsonFooter.put("icon_url", footer.iconUrl)
                     jsonEmbed.put("footer", jsonFooter)
                 }
 
-                if (image != null) {
-                    val jsonImage: JSONObject = JSONObject()
-
-                    jsonImage.put("url", image.getUrl())
+                embed.image?.let { image ->
+                    val jsonImage = JSONObject()
+                    jsonImage.put("url", image.url)
                     jsonEmbed.put("image", jsonImage)
                 }
 
-                if (thumbnail != null) {
-                    val jsonThumbnail: JSONObject = JSONObject()
-
-                    jsonThumbnail.put("url", thumbnail.getUrl())
+                embed.thumbnail?.let { thumbnail ->
+                    val jsonThumbnail = JSONObject()
+                    jsonThumbnail.put("url", thumbnail.url)
                     jsonEmbed.put("thumbnail", jsonThumbnail)
                 }
 
-                if (author != null) {
-                    val jsonAuthor: JSONObject = JSONObject()
-
-                    jsonAuthor.put("name", author.getName())
-                    jsonAuthor.put("url", author.getUrl())
-                    jsonAuthor.put("icon_url", author.getIconUrl())
+                embed.author?.let { author ->
+                    val jsonAuthor = JSONObject()
+                    jsonAuthor.put("name", author.name)
+                    jsonAuthor.put("url", author.url)
+                    jsonAuthor.put("icon_url", author.iconUrl)
                     jsonEmbed.put("author", jsonAuthor)
                 }
 
-                val jsonFields: MutableList<JSONObject> = ArrayList()
-                for (field: EmbedObject.Field in fields) {
-                    val jsonField: JSONObject = JSONObject()
-
-                    jsonField.put("name", field.getName())
-                    jsonField.put("value", field.getValue())
-                    jsonField.put("inline", field.isInline())
-
+                val jsonFields = mutableListOf<JSONObject>()
+                embed.fields.forEach { field ->
+                    val jsonField = JSONObject()
+                    jsonField.put("name", field.name)
+                    jsonField.put("value", field.value)
+                    jsonField.put("inline", field.inline)
                     jsonFields.add(jsonField)
                 }
-
                 jsonEmbed.put("fields", jsonFields.toTypedArray())
                 embedObjects.add(jsonEmbed)
             }
@@ -135,55 +107,42 @@ class DiscordWebhook
         connection.doOutput = true
         connection.requestMethod = "POST"
 
-        val stream = connection.outputStream
+        val stream: OutputStream = connection.outputStream
         stream.write(json.toString().toByteArray())
         stream.flush()
         stream.close()
 
-        connection.inputStream.close() //I'm not sure why but it doesn't work without getting the InputStream
+        connection.inputStream.close()
         connection.disconnect()
     }
 
-    class EmbedObject() {
+    class EmbedObject {
         var title: String? = null
-            private set
         var description: String? = null
-            private set
         var url: String? = null
-            private set
         var color: Color? = null
-            private set
-
         var footer: Footer? = null
-            private set
         var thumbnail: Thumbnail? = null
-            private set
         var image: Image? = null
-            private set
         var author: Author? = null
-            private set
-        private val fields: MutableList<Field> = ArrayList()
+        val fields: MutableList<Field> = mutableListOf()
 
-        fun getFields(): List<Field> {
-            return fields
-        }
-
-        fun setTitle(title: String?): EmbedObject {
+        fun setTitle(title: String): EmbedObject {
             this.title = title
             return this
         }
 
-        fun setDescription(description: String?): EmbedObject {
+        fun setDescription(description: String): EmbedObject {
             this.description = description
             return this
         }
 
-        fun setUrl(url: String?): EmbedObject {
+        fun setUrl(url: String): EmbedObject {
             this.url = url
             return this
         }
 
-        fun setColor(color: Color?): EmbedObject {
+        fun setColor(color: Color): EmbedObject {
             this.color = color
             return this
         }
@@ -198,7 +157,7 @@ class DiscordWebhook
             return this
         }
 
-        fun setImage(url: String?): EmbedObject {
+        fun setImage(url: String): EmbedObject {
             this.image = Image(url)
             return this
         }
@@ -208,69 +167,56 @@ class DiscordWebhook
             return this
         }
 
-        fun addField(name: String?, value: String?, inline: Boolean): EmbedObject {
-            fields.add(Field(name, value, inline))
+        fun addField(name: String, value: String, inline: Boolean): EmbedObject {
+            this.fields.add(Field(name, value, inline))
             return this
         }
 
-        inner class Footer(private val text: String, private val iconUrl: String)
-
-        inner class Thumbnail(private val url: String)
-
-        inner class Image private constructor(private val url: String)
-
-        inner class Author(private val name: String, private val url: String, private val iconUrl: String)
-
-        inner class Field private constructor(
-            private val name: String,
-            private val value: String,
-            val isInline: Boolean
-        )
+        class Footer(val text: String, val iconUrl: String)
+        class Thumbnail(val url: String)
+        class Image(val url: String)
+        class Author(val name: String, val url: String, val iconUrl: String)
+        class Field(val name: String, val value: String, val inline: Boolean)
     }
 
-    private inner class JSONObject() {
-        private val map = HashMap<String, Any>()
+    private class JSONObject {
+        private val map: MutableMap<String, Any?> = HashMap()
 
-        fun put(key: String, value: Any?) {
+        fun put(key: String?, value: Any?) {
             if (value != null) {
-                map[key] = value
+                map[key!!] = value
             }
         }
 
         override fun toString(): String {
             val builder = StringBuilder()
-            val entrySet: Set<Map.Entry<String, Any>> = map.entries
+            val entrySet = map.entries
             builder.append("{")
-
             var i = 0
-            for (entry: Map.Entry<String, Any> in entrySet) {
-                builder.append(quote(key)).append(":")
-
-                if (`val` is String) {
-                    builder.append(quote(`val`.toString()))
-                } else if (`val` is Int) {
-                    builder.append(`val`.toString().toInt())
-                } else if (`val` is Boolean) {
-                    builder.append(`val`)
-                } else if (`val` is JSONObject) {
-                    builder.append(`val`.toString())
-                } else if (`val`.javaClass.isArray) {
-                    builder.append("[")
-                    val len = Array.getLength(`val`)
-                    for (j in 0 until len) {
-                        builder.append(Array.get(`val`, j).toString()).append(if (j != len - 1) "," else "")
+            for (entry in entrySet) {
+                val value = entry.value
+                builder.append(quote(entry.key)).append(":")
+                when (value) {
+                    is String -> builder.append(quote(value))
+                    is Int -> builder.append(value)
+                    is Boolean -> builder.append(value)
+                    is JSONObject -> builder.append(value.toString())
+                    is Array<*> -> {
+                        builder.append("[")
+                        val len = value.size
+                        for (j in 0 until len) {
+                            builder.append(value[j].toString()).append(if (j != len - 1) "," else "")
+                        }
+                        builder.append("]")
                     }
-                    builder.append("]")
                 }
-
                 builder.append(if (++i == entrySet.size) "}" else ",")
             }
-
             return builder.toString()
         }
 
-        private fun quote(string: String): String {
-            return "\"" + string + "\""
+        private fun quote(string: String?): String {
+            return "\"$string\""
         }
     }
 }
