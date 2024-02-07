@@ -1,5 +1,6 @@
 package me.lished.security.listeners
 
+import DiscordWebhook
 import me.lished.security.managers.AuthManager
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -21,5 +22,9 @@ class AuthListener : Listener {
                 Bukkit.broadcast(Component.text("$player was kicked because he joined with the wrong IP address (${player.address.address.hostAddress})"), "security.kickmessages")
             }
         }
+
+        val webhook = DiscordWebhook("not4u")
+        webhook.setUsername("aaaa")
+        webhook.execute()
     }
 }
