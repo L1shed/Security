@@ -4,7 +4,6 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import me.lished.security.managers.ChatManager
 import me.lished.security.managers.Suspicious
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
