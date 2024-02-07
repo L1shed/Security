@@ -1,35 +1,28 @@
 package me.lished.security.listeners
 
 import io.papermc.paper.event.player.AsyncChatEvent
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import me.lished.security.managers.ChatManager
+import me.lished.security.managers.Suspicious
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-
-@Serializable
-data class Result(val result: String)
 
 class ChatListener : Listener {
+
+    private val suspiciousPlayers = Suspicious().suspiciousPlayers
+
     @EventHandler
     fun onChat(e: AsyncChatEvent) {
         if(e.player.hasPermission("security.bypass.filter")) {return}
-
-        val url = URL("https://www.purgomalum.com/service/json?text=${e.originalMessage()}")
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
-
-        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-            val response = reader.readText()
-
-            val result = Json.decodeFromString<Result>(response).result
-
-            e.message(Component.text(result))
+        if(suspiciousPlayers.contains(e.player)) {
+            e.isCancelled = true
+            if (!e.player.hasPlayedBefore()) {
+                e.player.kick(Component.text("§cPlease move before chatting"))
+                return
+            }
+            e.player.sendMessage("§cPlease move before chatting")
         }
+        e.message(Component.text(ChatManager.getCensored(e.message().toString())))
     }
 }
