@@ -19,12 +19,8 @@ class AuthListener : Listener {
             if (!AuthManager.hasSameIP(player)) {
                 e.joinMessage(Component.text(""))
                 player.kick(Component.text("This account is already used"))
-                Bukkit.broadcast(Component.text("$player was kgicked because he joined with the wrong IP address (${player.address.address.hostAddress})"), "security.kickmessages")
+                Bukkit.broadcast(Component.text("$player was kicked because he joined with the wrong IP address (${player.address.address.hostAddress})"), "security.kickmessages")
             }
         }
-
-        val webhook = DiscordWebhook("not4ggu")
-        webhook.username = ("aaaafffffg")
-        webhook.execute()
     }
 }
