@@ -11,17 +11,12 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 @Serializable
-data class Security(
-    val vpn: Boolean,
-    val proxy: Boolean,
-    val tor: Boolean,
-    val relay: Boolean
-)
-
-@Serializable
 data class IPAddressInfo(
-    val ip: String,
-    val security: Security,
+    val country: String,
+    val countryCode: String, // can be parsed
+    val mobile: Boolean,
+    val proxy: Boolean,
+    val hosting: Boolean
 )
 
 object AuthManager {
@@ -51,9 +46,9 @@ object AuthManager {
             val reader = BufferedReader(InputStreamReader(connection.inputStream))
             val response = reader.readText()
 
-            val vpnInfo = Json.decodeFromString<IPAddressInfo>(response).security
+            val vpnInfo = Json.decodeFromString<IPAddressInfo>(response)
 
-            if (vpnInfo.vpn || vpnInfo.proxy || vpnInfo.tor || vpnInfo.relay) return true
+            if (vpnInfo.mobile || vpnInfo.proxy || vpnInfo.hosting) return true
         }
 
         return false
