@@ -9,6 +9,6 @@ class Security : JavaPlugin() {
     override fun onEnable() {
         server.pluginManager.registerEvents(AuthListener(), this)
 //        server.pluginManager.registerEvents(ClickListener(), this)
-        server.pluginManager.registerEvents(ChatListener(), this)
+//        server.pluginManager.registerEvents(ChatListener(), this)
     }
 }
