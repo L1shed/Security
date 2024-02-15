@@ -43,7 +43,7 @@ object AuthManager {
     }
 
     fun hasVPN(player: Player): Boolean {
-        val url = URL("http://ip-api.com/json/${player.address.hostString}")
+        val url = URL("http://ip-api.com/json/${player.address.hostString}?fields=country,proxy")
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
 
