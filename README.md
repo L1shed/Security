@@ -8,8 +8,9 @@ The Security plugin is designed to enhance the safety and security of your Minec
 - **AntiCheat**: including ADVANCED Auto clicker and macro checker based on machine-learning click and type patterns analyzer
 - **Chat Filtering**: Profanity or offensive language is hidden by asterisks
 - **Blocking plugin scanners**: So players can't know what plugins you're using
-- **Anti-Bot / Raid**
-- **Anti-VPN**
+- **Anti-Bot / Raid**: Protect against bot attacks (such as MCStorm or MCSpam) 
+- **Anti-VPN and Country Blocking**
+- **Everything customisable**
 
 ## Installation
 To install it, simply download the latest build (.jar file) and place it in the "plugins" folder of your Minecraft server.
