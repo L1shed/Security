@@ -1,6 +1,5 @@
 package me.lished.security.listeners
 
-import DiscordWebhook
 import me.lished.security.managers.AuthManager
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
