@@ -14,7 +14,10 @@ class AuthListener : Listener {
         val player = e.player
 
         if (!AuthManager.hasJoinedBefore(player)) {
-            if (!AuthManager.hasVPN(player)) AuthManager.storeIP(player)
+            if (!AuthManager.hasVPN(player)) {
+                return
+            }
+            AuthManager.storeIP(player)
         } else {
             if (!AuthManager.hasSameIP(player)) {
                 e.joinMessage(Component.text(""))
