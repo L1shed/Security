@@ -11,12 +11,17 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 @Serializable
-data class IPAddressInfo(
+data class IpAPIResponse(
     val country: String,
     val countryCode: String, // can be parsed
     val mobile: Boolean,
     val proxy: Boolean,
     val hosting: Boolean
+)
+
+@Serializable
+data class VPNBlockerResponse(
+    val hostip: Boolean
 )
 
 object AuthManager {
@@ -38,17 +43,30 @@ object AuthManager {
     }
 
     fun hasVPN(player: Player): Boolean {
-        val url = URL("http://ip-api.com/json/${player.address.hostString}?fields=country,countryCode,proxy")
-        val connection = url.openConnection() as HttpURLConnection
+        var url = URL("http://ip-api.com/json/${player.address.hostString}?fields=country,countryCode,proxy")
+        var connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
 
         if (connection.responseCode == HttpURLConnection.HTTP_OK) {
             val reader = BufferedReader(InputStreamReader(connection.inputStream))
             val response = reader.readText()
 
-            val vpnInfo = Json.decodeFromString<IPAddressInfo>(response)
+            val vpnInfo = Json.decodeFromString<IpAPIResponse>(response)
 
             if (vpnInfo.mobile || vpnInfo.proxy || vpnInfo.hosting) return true
+        }
+
+        url = URL("http://api.vpnblocker.net/v2/json/${player.address.hostString}")
+        connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "GET"
+
+        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+            val reader = BufferedReader(InputStreamReader(connection.inputStream))
+            val response = reader.readText()
+
+            val vpnInfo = Json.decodeFromString<VPNBlockerResponse>(response)
+
+            if (vpnInfo.hostip) return true
         }
 
         return false
